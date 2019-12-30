@@ -31,9 +31,22 @@ const assert = require('assert');
 const database = require('./database.json');
 
 
-const total = 0 // TODO
+const total = calcular(); // TODO
 
 // Throws error on failure
 assert.equal(total, 23, `Invalid result: ${total} != 23`);
 
 console.log('Success!');
+
+
+function calcular(){
+    let listaSombreros = []; //lista que contendra solo los id de los sombreros
+    database.filter(user=>user.hats.length>0).forEach(hats=>hats.hats.forEach(hat=>listaSombreros.push(hat.id))) //llenando lista con id de cada hat
+    let contador = {}; //objeto que contendra los duplicados
+    listaSombreros.forEach((obj)=> { contador[obj] = (contador[obj] || 0)+1; }); //sumando en caso de que exista añadiendo en caso contrario
+
+    //como ya obtenemos los duplicados ahora solo se ordenan de menor a mayor y se suman los ultimos 3 y se retorna el resultado, se asume que estos
+    //ultimos 3 son los mayores
+    return Object.values(contador).sort().splice(Object.values(contador).length-3,Object.values(contador).length).reduce((a,b)=> a+b ,0)
+
+}
